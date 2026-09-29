@@ -140,3 +140,203 @@ Do not remove `normalized_pattern_id`. It is a synthetic ground-truth label that
 8. "Which approvals were required?"
 9. "Should this incident be linked to an existing problem?"
 10. "Should SEIP recommend creating a new problem/change?"
+
+
+
+             Existing Systems
+ ┌──────────┬──────────┬──────────┬───────────┐
+ │ ITSM     │Monitoring│ Change   │ Engineering│
+ │          │          │ Mgmt     │ Systems    │
+ └────┬─────┴────┬─────┴────┬─────┴─────┬─────┘
+      │          │          │           │
+      └──────────┴──────────┴───────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │       SEIP      │
+              │ System of       │
+              │ Intelligence    │
+              └────────┬────────┘
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+      Capacity      Causality   Investment
+      Leakage       Analysis    Options
+          │            │            │
+          └────────────┼────────────┘
+                       ▼
+                 Governed Action
+                       │
+                       ▼
+                Outcome Verification
+
+3. MVP Functional Domains
+
+From your PRD, I would initially divide SEIP into 7 major domains.
+
+Domain	Purpose
+Evidence Ingestion	Bring operational records into SEIP
+Service Mapping	Connect evidence to services
+Activity Reconstruction	Reconstruct what actually happened
+Capacity Intelligence	Identify engineering toil/friction/waste
+Causal Intelligence	Explain recurring patterns
+Investment Intelligence	Recommend interventions
+Outcome Verification	Determine whether value was realized
+
+And underneath these we need the trust/quality layer.
+
+
+4. The Trust Layer Is Critical
+
+Your MVP targets tell me something important:
+
+SEIP isn't simply an analytics dashboard.
+
+The product must establish whether its own intelligence can be trusted.
+
+Therefore we need a separate SEIP Intelligence Quality Framework.
+
+Quality dimensions
+
+You provided:
+
+Alert Quality
+Observability Coverage
+Validation Automation
+Service Mapping
+Operation Flow
+Automation Coverage
+Incident Learning
+
+I'd organize them like this:
+
+                 SEIP Intelligence Quality
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+   Evidence            Correlation        Intelligence
+       │                  │                  │
+       ▼                  ▼                  ▼
+Observability        Service Mapping     Alert Quality
+Coverage             Correlation         Incident Learning
+                     Coverage
+       │
+       ▼
+Validation
+Automation
+       │
+       ▼
+Execution Trust
+       │
+       ▼
+Outcome Verification
+
+
+Proposed MVP Architecture
+
+Given your existing Python/PostgreSQL experience, I'd start relatively simple.
+
+
+                   ┌───────────────────┐
+                   │ External Systems  │
+                   │ ITSM / Monitoring │
+                   │ Changes / CI-CD   │
+                   └─────────┬─────────┘
+                             │
+                             ▼
+                 ┌─────────────────────┐
+                 │ Ingestion Layer     │
+                 │ Python / FastAPI    │
+                 └──────────┬──────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │ PostgreSQL          │
+                 │ Evidence Layer      │
+                 └──────────┬──────────┘
+                            │
+             ┌──────────────┼──────────────┐
+             ▼              ▼              ▼
+       Correlation      Activity       Service
+        Engine          Engine         Mapping
+             │              │              │
+             └──────────────┼──────────────┘
+                            ▼
+                 ┌─────────────────────┐
+                 │ SEIP Intelligence   │
+                 │ Engine              │
+                 └──────────┬──────────┘
+                            │
+             ┌──────────────┼──────────────┐
+             ▼              ▼              ▼
+          Leakage        Causal        Investment
+          Analysis       Analysis      Options
+             │              │              │
+             └──────────────┼──────────────┘
+                            ▼
+                 ┌─────────────────────┐
+                 │ Review / Governance │
+                 └──────────┬──────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │ Outcome Verification│
+                 └──────────┬──────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │ SEIP Dashboard      │
+                 │ Streamlit           │
+                 └─────────────────────┘
+
+Don't start with the AI agent.
+
+Start with the SEIP Evidence → Service → Activity → Leakage pipeline.
+
+MVP Phase 1
+Synthetic operational data
+        ↓
+PostgreSQL
+        ↓
+Evidence ingestion
+        ↓
+Service mapping
+        ↓
+Correlation
+        ↓
+Activity reconstruction
+        ↓
+Capacity leakage detection
+        ↓
+Reviewer dashboard
+MVP Phase 2
+
+Add:
+
+Causal chain
+      ↓
+Investment options
+      ↓
+Review queue
+      ↓
+Governed initiatives
+MVP Phase 3
+
+Add:
+
+Expected benefit
+      ↓
+Actual operational measurements
+      ↓
+Realized benefit
+      ↓
+Outcome verification
+MVP Phase 4
+
+Then introduce more sophisticated:
+
+LLM
+RAG
+Agentic workflows
+Predictive analysis
+Natural-language investigation
